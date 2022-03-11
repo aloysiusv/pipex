@@ -47,10 +47,9 @@ mandatory:		$(NAME)
 
 clean:
 			rm -rf $(OBJS)
-			make -C ./libft clean
 
 fclean:		clean
-			rm -rf $(NAME) $(NAME_BONUS)
+			rm -rf $(NAME)
 
 re:			fclean all
 

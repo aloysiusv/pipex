@@ -73,25 +73,25 @@ size_t	ft_strlcpy(char *dst, const	char *src, size_t size)
 void	free_all(t_pipex *t)
 {
 	// size_t	i;
-	(void)t;
+
 	// i = 0;
-	// if (t->bin_path)
+	// while (t->bin_path[i])
 	// {
-	// 	while (t->bin_path)
-	// 		free(t->bin_path[i++]);
-	// 	if (t->bin_path != NULL)
-	// 		free(t->bin_path);
+	// 	free(&t->bin_path[i]);
+	// 	i++;
 	// }
 	// i = 0;
 	// if (t->command)
 	// {
-	// 	while (t->command)
-	// 		free(t->command[i++]);
-	// 	if (t->command != NULL)
-	// 		free(t->command);
-	// // }
-	// if (t->pipes != NULL)
-	// 	free(t->pipes);
-	// if (t != NULL)
-	// 	free(t);
+	// 	while (t->command[i])
+	// 	{
+	// 		free(&t->command[i]);
+	// 		i++;
+	// 	}
+	// 	free(t->command);
+	// }
+	if (t->pipes)
+		free(t->pipes);
+	if (t)
+		free(t);
 }

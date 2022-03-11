@@ -12,27 +12,28 @@
 
 #include "../inc/pipex.h"
 
-void	create_pipes(t_pipex *t)
+void	open_pipes(t_pipex *t)
 {
 	size_t	i;
 
-	t->pipes = (int*)malloc(sizeof(int) * (t->nb_commands - 1));
+	t->pipes = (int**)malloc(sizeof(int) * (t->nb_pipes));
 	if (t->pipes == NULL)
 	{
 		ft_putstr_fd("Error: couldn't malloc pipe array\n", 2);
 		exit(EXIT_FAILURE);
 	}
 	i = 0;
-	while (i < (t->nb_commands - 1))
+	while (i < (t->nb_pipes))
 	{
-		if (pipe(&t->pipes[2 * i]) < 0)
+		if (pipe(t->pipes[i][2]) < 0)
 		{
 			ft_putstr_fd("Error: couldn't create pipes\n", 2);
-			free(t->pipes);
+			free(t->pipes[i][2]);
 			exit(EXIT_FAILURE);
 		}
 		i++;
 	}
+	printf("Pipes successfully created!\n");
 }
 
 void	close_pipes(t_pipex *t)
@@ -40,9 +41,10 @@ void	close_pipes(t_pipex *t)
 	size_t	i;
 
 	i = 0;
-	while (i < t->nb_commands)
+	while (i < t->nb_pipes)
 	{
-		close(t->pipes[i]);
+		close(t->pipes[i][2]);
 		i++;
 	}
+	printf("Pipes successfully closed!\n");
 }

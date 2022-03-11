@@ -17,19 +17,25 @@
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <fcntl.h>
+# include <stdio.h>
+
+# define STDIN			0
+# define STDOUT			1
+# define STDERR			2
 
 typedef struct	s_pipex
 {
 	int			infile;
     int			outfile;
-	int			*pipes;
+	int			**pipes;
 	size_t		nb_commands;
+	size_t		nb_pipes;
 	size_t		cmd_pos;
 	char		**command;
 	char		*bin_path[5];
 }				t_pipex;
 
-void	create_pipes(t_pipex *t);
+void	open_pipes(t_pipex *t);
 void	close_pipes(t_pipex *t);
 int		execute_command(t_pipex *t, char *argv[]);
 void	make_slaves(t_pipex *t, char *argv[]);
