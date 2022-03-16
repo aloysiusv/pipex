@@ -19,32 +19,42 @@
 # include <fcntl.h>
 # include <stdio.h>
 
-# define STDIN			0
-# define STDOUT			1
-# define STDERR			2
+# define READ	0
+# define WRITE	1
+
+# define FOUND		0
+# define NOT_FOUND -1
 
 typedef struct	s_pipex
 {
-	int			infile;
-    int			outfile;
-	int			**pipes;
-	size_t		nb_commands;
-	size_t		nb_pipes;
-	size_t		cmd_pos;
-	char		**command;
-	char		*bin_path[5];
+	int			fdin;
+    int			fdout;
+	int			pipes[2];
+	size_t		nb_paths;
+	size_t		nb_cmds;
+	size_t		current_cmd;
+	size_t		argc;
+	char		*command;
+	char		*full_path;
+	char		*paths_slash;
+	char		**all_paths;
+	char		**argv;
+	char		**envp;
 }				t_pipex;
 
-void	open_pipes(t_pipex *t);
-void	close_pipes(t_pipex *t);
-int		execute_command(t_pipex *t, char *argv[]);
-void	make_slaves(t_pipex *t, char *argv[]);
+void	execute_command(t_pipex *t);
+void	get_formatted_paths(t_pipex *t);
+void	redir_exec(t_pipex *t);
 
-char	**ft_split(char const *s, char c);
+size_t	ft_strlen(const char *s);
 size_t	ft_strlcpy(char *dst, const	char *src, size_t size);
+int		ft_strncmp(const char *s1, const char *s2, size_t n);
+char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 void	ft_putstr_fd(char *s, int fd);
 
-void	free_all(t_pipex *t);
+void	oops_crash(t_pipex *t, char *error_message);
+void	free_strings(char **tab);
 
 #endif

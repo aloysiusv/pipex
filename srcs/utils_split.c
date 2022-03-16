@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_split.c                                         :+:      :+:    :+:   */
+/*   utils_split.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lrandria <lrandria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/11 00:10:03 by lrandria          #+#    #+#             */
-/*   Updated: 2022/03/11 00:10:03 by lrandria         ###   ########.fr       */
+/*   Created: 2022/03/12 14:21:24 by lrandria          #+#    #+#             */
+/*   Updated: 2022/03/12 14:21:24 by lrandria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,23 +63,23 @@ static char	*word_cpy(char const **s, char sep)
 char	**ft_split(char const *s, char c)
 {
 	char	**new_arr;
-	size_t	i;
 	size_t	size;
+	size_t	i;
 
-	if (s == 0)
-		return (0);
+	if (s == NULL)
+		return (NULL);
 	size = word_count(s, c);
 	new_arr = (char **)malloc(sizeof(char *) * (size + 1));
-	if (new_arr == 0)
-		return (0);
+	if (new_arr == NULL)
+		return (NULL);
 	i = 0;
 	while (i < size)
 	{
 		new_arr[i] = word_cpy(&s, c);
-		if (new_arr[i] == 0)
+		if (new_arr[i] == NULL)
 			return (free_words(new_arr, size));
 		i++;
 	}
-	new_arr[i] = 0;
+	new_arr[i] ='\0';
 	return (new_arr);
 }

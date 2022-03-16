@@ -20,15 +20,19 @@ OBJS		=	$(SRCS:.c=.o)
 HDR			=	./inc/pipex.h
 S			=	./srcs/
 # S_BONUS		=	./bonus/srcs/
-SRCS		=	$(S)main.c \
-				$(S)pipes.c $(S)execute.c \
-				$(S)slaves.c \
-				$(S)ft_split.c $(S)utils.c
+SRCS		=	$(S)0_main.c \
+				$(S)1_redirect.c \
+				$(S)2_find_all_paths.c \
+				$(S)3_execute.c \
+				$(S)utils_split.c $(S)utils_libft.c $(S)utils_libft_mallocs.c \
+				$(S)utils_free_crash.c
 
-# SRCS_BONUS	=	$(S_BONUS)0_main_bonus.c \
-# 				$(S_BONUS)1_map_parse_bonus.c \
-# 				$(S_BONUS)2_map_fill_bonus.c $(S_BONUS)3_map_check_bonus.c\
-# 				$(S_BONUS)4_init_txtr_bonus.c
+# SRCS_BONUS	=	$(S)0_main.c \
+					$(S)1_redirect.c \
+					$(S)2_find_all_paths.c \
+					$(S)3_execute.c \
+					$(S)utils_split.c $(S)utils_libft.c $(S)utils_libft_mallocs.c \
+					$(S)utils_free_crash.c
 
 all:			$(NAME)
 

@@ -12,22 +12,27 @@
 
 #include "../inc/pipex.h"
 
-int		execute_command(t_pipex *t, char *argv[])
+void	execute_command(t_pipex *t)
 {
 	size_t	i;
 
-	t->command = ft_split(argv[t->cmd_pos], ' ');
-	t->bin_path[0] = ft_strjoin("/bin/", t->command[0]);
-	t->bin_path[1] = ft_strjoin("/usr/bin/", t->command[0]);
-	t->bin_path[2] = ft_strjoin("/usr/local/bin/", t->command[0]);
-	t->bin_path[3] = ft_strjoin("/usr/sbin/", t->command[0]);
-	t->bin_path[4] = ft_strjoin("/sbin/", t->command[0]);
+	t->command = ft_split(t->argv[t->current_cmd], ' ');
+	if (t->command == NULL)
+		oops_crash(t, "Error: failed to retrieve command\n");
 	i = 0;
-	while (i < 5)
+	get_formatted_paths(t);
+	while (t->all_paths_slash[i])
 	{
-		execve(t->bin_path[i], t->command, 0);
+		t->full_path = ft_strjoin(t->all_paths_slash[i], t->command[0]);
+		if (t->full_path == NULL)
+			oops_crash(t, "Error: full_path join failed\n");
+		if (access(t->full_path, F_OK) == 0)
+		{
+			if (execve(t->full_path, t->command, 0) == -1)
+				oops_crash(t, "Error: execve system call failed\n");
+		}
+		free(t->full_path);
 		i++;
 	}
-	ft_putstr_fd("Error: command not found\n", 2);
-	return (-1);
+	oops_crash(t, "Error: command not found\n");
 }
