@@ -29,7 +29,10 @@ static void	start_master_process(t_pipex *t)
 			redir_exec(t);
 		t->current_cmd++;
 	}
-	waitpid(-1, &status, 0);
+	close(t->fd[READ]);
+	close(t->fd[WRITE]);
+	while (waitpid(-1, &status, 0) != -1)
+		;
 }
 
 static void	open_files(t_pipex *t)
