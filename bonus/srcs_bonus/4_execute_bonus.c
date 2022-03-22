@@ -24,10 +24,12 @@ static void	get_paths_get_command(t_pipex *t)
 	{
 		if (ft_strncmp(t->envp[i], "PATH=", 5) == FOUND)
 		{
-			t->all_paths = ft_split(tmp = ft_substr(t->envp[i], 5,
-						ft_strlen(t->envp[i])), ':');
-			if (t->all_paths == NULL)
+			tmp = ft_substr(t->envp[i], 5, ft_strlen(t->envp[i]));
+			if (tmp == NULL)
 				oops_crash(t, "Error: failed to extract $PATH\n");
+			t->all_paths = ft_split(tmp, ':');
+			if (t->all_paths == NULL)
+				oops_crash(t, "Error: failed to retrieve all paths\n");
 			free(tmp);
 		}
 		i++;

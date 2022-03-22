@@ -35,9 +35,11 @@ static void	start_master_process(t_pipex *t)
 static void	open_files(t_pipex *t)
 {
 	t->fdin = open(t->argv[1], O_RDONLY);
+	if (t->fdin < 0)
+		oops_crash(t, "Error: can't open infile\n");
 	t->fdout = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if (t->fdin < 0 || t->fdout < 0)
-		oops_crash(t, "Error: can't open files\n");
+	if (t->fdout < 0)
+		oops_crash(t, "Error: can't open/create outfile\n");
 }
 
 static void	init_pipex(t_pipex *t, int argc, char *argv[], char *envp[])
