@@ -32,7 +32,7 @@ static void	redir_last_command(t_pipex *t)
 static void	redir_any_command(t_pipex *t)
 {
 	int	tmp_fd[2];
-	
+
 	if (pipe(tmp_fd) == -1)
 		oops_crash(t, "Error: 'pipe' failed in slave process\n");
 	dup2(tmp_fd[READ], STDIN_FILENO);

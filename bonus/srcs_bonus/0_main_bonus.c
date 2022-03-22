@@ -19,7 +19,7 @@ static void	open_files(t_pipex *t)
 		t->heredoc = 1;
 		t->limiter = t->argv[2];
 		t->fdout = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_APPEND,
-					0644);
+				0644);
 	}
 	else
 	{
@@ -27,7 +27,7 @@ static void	open_files(t_pipex *t)
 		if (t->fdin < 0)
 			oops_crash(t, "Error: can't open infile\n");
 		t->fdout = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_TRUNC,
-					0644);
+				0644);
 	}
 	if (t->fdout < 0)
 		oops_crash(t, "Error: can't open/create outfile\n");
