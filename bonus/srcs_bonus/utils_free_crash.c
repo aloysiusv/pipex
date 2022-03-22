@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include "../inc_bonus/pipex_bonus.h"
 
 void	free_strings(char **tab)
 {

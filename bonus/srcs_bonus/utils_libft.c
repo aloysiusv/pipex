@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include "../inc_bonus/pipex_bonus.h"
 
 size_t	ft_strlen(const char *s)
 {

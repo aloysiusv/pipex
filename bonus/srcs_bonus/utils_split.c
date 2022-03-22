@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include "../inc_bonus/pipex_bonus.h"
 
 static void	*free_words(char **new_arr, size_t nb_of_words)
 {
