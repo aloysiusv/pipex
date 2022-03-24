@@ -28,8 +28,8 @@ static void	write_line(t_pipex *t, int *fd_heredoc)
 			free(line);
 			return ;
 		}
-		ft_putstr_fd(line, fd_heredoc[WRITE]);
-		ft_putstr_fd("\n", fd_heredoc[WRITE]);
+		ft_putstr_fd(line, fd_heredoc[OUT]);
+		ft_putstr_fd("\n", fd_heredoc[OUT]);
 		free(line);
 	}
 }
@@ -46,7 +46,7 @@ void	create_heredoc(t_pipex *t)
 		oops_crash(t, "Error: 'fork' failed in here_doc\n");
 	if (pid == 0)
 		write_line(t, fd_heredoc);
-	dup2(fd_heredoc[READ], STDIN_FILENO);
-	close(fd_heredoc[READ]);
-	close(fd_heredoc[WRITE]);
+	dup2(fd_heredoc[IN], STDIN_FILENO);
+	close(fd_heredoc[IN]);
+	close(fd_heredoc[OUT]);
 }

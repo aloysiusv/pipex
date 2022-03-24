@@ -27,15 +27,17 @@ static void	get_paths_get_command(t_pipex *t)
 			tmp = ft_substr(t->envp[i], 5, ft_strlen(t->envp[i]));
 			if (tmp == NULL)
 				oops_crash(t, "Error: failed to extract $PATH\n");
-			t->all_paths = ft_split(tmp, ':');
-			if (t->all_paths == NULL)
+			t->head_child->all_paths = ft_split(tmp, ':');
+			if (t->head_child->all_paths == NULL)
 				oops_crash(t, "Error: failed to retrieve all paths\n");
 			free(tmp);
 		}
 		i++;
 	}
-	t->command = ft_split(t->argv[t->current_cmd], ' ');
-	if (t->command == NULL)
+	if (t->head_child->all_paths == NULL)
+		oops_crash(t, "Error: failed to retrieve all paths\n");
+	t->head_child->command = ft_split(t->argv[t->current_cmd], ' ');
+	if (t->head_child->command == NULL)
 		oops_crash(t, "Error: failed to extract command\n");
 }
 
@@ -43,12 +45,12 @@ static void	add_slash_to_path(t_pipex *t, size_t i)
 {
 	char	*tmp;
 
-	tmp = ft_strjoin(t->all_paths[i], "/");
-	if (t->all_paths[i][ft_strlen(t->all_paths[i]) - 1] != '/')
-		t->full_path = ft_strjoin(tmp, t->command[0]);
+	tmp = ft_strjoin(t->head_child->all_paths[i], "/");
+	if (t->head_child->all_paths[i][ft_strlen(t->head_child->all_paths[i]) - 1] != '/')
+		t->head_child->full_path = ft_strjoin(tmp, t->head_child->command[0]);
 	else
-		t->full_path = ft_strjoin(t->all_paths[i], t->command[0]);
-	if (t->full_path == NULL)
+		t->head_child->full_path = ft_strjoin(t->head_child->all_paths[i], t->head_child->command[0]);
+	if (t->head_child->full_path == NULL)
 	{
 		free(tmp);
 		oops_crash(t, "Error: can't get full path\n");
@@ -62,16 +64,16 @@ void	execute_command(t_pipex *t)
 
 	i = 0;
 	get_paths_get_command(t);
-	while (t->all_paths[i])
+	while (t->head_child->all_paths[i])
 	{
 		add_slash_to_path(t, i);
-		if (access(t->full_path, F_OK) == 0)
+		if (access(t->head_child->full_path, F_OK) == 0)
 		{
-			if (execve(t->full_path, t->command, 0) == -1)
+			if (execve(t->head_child->full_path, t->head_child->command, 0) == -1)
 				oops_crash(t, "Error: execve system call failed\n");
 		}
-		free(t->full_path);
-		t->full_path = NULL;
+		free(t->head_child->full_path);
+		t->head_child->full_path = NULL;
 		i++;
 	}
 	oops_crash(t, "Error: command not found\n");

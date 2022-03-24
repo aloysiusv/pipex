@@ -32,6 +32,7 @@ SRCS_BONUS	=	$(S_BONUS)0_main_bonus.c \
 				$(S_BONUS)2_heredoc.c \
 				$(S_BONUS)3_redirect_bonus.c \
 				$(S_BONUS)4_execute_bonus.c \
+				$(S_BONUS)utils_child.c \
 				$(S_BONUS)utils_gnl.c \
 				$(S_BONUS)utils_split.c \
 				$(S_BONUS)utils_free_crash.c \

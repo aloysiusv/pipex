@@ -31,8 +31,8 @@ typedef struct s_pipex
 	size_t		argc;
 	char		**argv;
 	char		**envp;
-	int			fdin;
-	int			fdout;
+	int			infile;
+	int			outfile;
 	int			fd[2];
 	size_t		nb_cmds;
 	size_t		current_cmd;

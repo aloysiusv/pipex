@@ -15,32 +15,26 @@
 static void	redir_first_command(t_pipex *t)
 {
 	if (t->heredoc == NO)
-		dup2(t->fdin, STDIN_FILENO);
-	dup2(t->fd[WRITE], STDOUT_FILENO);
-	close(t->fd[WRITE]);
-	close(t->fd[READ]);
+		dup2(t->infile, STDIN_FILENO);
+	dup2(t->head_child->fd[OUT], STDOUT_FILENO);
+	close(t->head_child->fd[OUT]);
+	close(t->head_child->fd[IN]);
 }
 
 static void	redir_last_command(t_pipex *t)
 {
-	dup2(t->fdout, STDOUT_FILENO);
-	dup2(t->fd[READ], STDIN_FILENO);
-	close(t->fd[READ]);
-	close(t->fd[WRITE]);
+	dup2(t->outfile, STDOUT_FILENO);
+	dup2(t->head_child->fd[IN], STDIN_FILENO);
+	close(t->head_child->fd[IN]);
+	close(t->head_child->fd[OUT]);
 }
 
 static void	redir_any_command(t_pipex *t)
 {
-	int	tmp_fd[2];
-
-	if (pipe(tmp_fd) == -1)
-		oops_crash(t, "Error: 'pipe' failed in slave process\n");
-	dup2(tmp_fd[READ], STDIN_FILENO);
-	dup2(tmp_fd[WRITE], STDOUT_FILENO);
-	close(tmp_fd[READ]);
-	close(tmp_fd[WRITE]);
-	close(t->fd[WRITE]);
-	close(t->fd[READ]);
+	dup2(t->head_child->fd[IN], STDIN_FILENO);
+	dup2(t->head_child->fd[OUT], STDOUT_FILENO);
+	close(t->head_child->fd[IN]);
+	close(t->head_child->fd[OUT]);
 }
 
 void	redir_exec(t_pipex *t)

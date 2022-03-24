@@ -34,6 +34,8 @@ static void	get_paths_get_command(t_pipex *t)
 		}
 		i++;
 	}
+	if (t->all_paths == NULL)
+		oops_crash(t, "Error: failed to retrieve all paths\n");
 	t->command = ft_split(t->argv[t->current_cmd], ' ');
 	if (t->command == NULL)
 		oops_crash(t, "Error: failed to extract command\n");

@@ -18,31 +18,43 @@ static void	open_files(t_pipex *t)
 	{
 		t->heredoc = 1;
 		t->limiter = t->argv[2];
-		t->fdout = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_APPEND,
+		t->outfile = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_APPEND,
 				0644);
 	}
 	else
 	{
-		t->fdin = open(t->argv[1], O_RDONLY);
-		if (t->fdin < 0)
+		t->infile = open(t->argv[1], O_RDONLY);
+		if (t->infile < 0)
 			oops_crash(t, "Error: can't open infile\n");
-		t->fdout = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_TRUNC,
+		t->outfile = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_TRUNC,
 				0644);
 	}
-	if (t->fdout < 0)
+	if (t->outfile < 0)
 		oops_crash(t, "Error: can't open/create outfile\n");
 }
 
 static void	init_pipex(t_pipex *t, int argc, char *argv[], char *envp[])
 {
+	t_child	*new;
+	size_t	i;
+	
 	t->argc = argc;
 	t->argv = argv;
 	t->envp = envp;
-	t->nb_cmds = t->argc - 3;
-	t->command = NULL;
-	t->all_paths = NULL;
-	t->full_path = NULL;
 	t->heredoc = 0;
+	t->nb_cmds = t->argc - 3;
+	t->head_child = (t_child *)malloc(sizeof(t_child));
+	if (t->head_child == NULL)
+		oops_crash(t, "Error: couldn't malloc 'head_child'\n");
+	while (i < t->nb_cmds)
+	{
+		new = add_next_child(t->head_child);
+		if (new == NULL)
+			oops_crash(t, "Error: couldn't malloc 'next_child'\n");
+		t->head_child = t->head_child->next_child;
+		i++;
+	}
+	t->head_child = t->head_child->next_child;
 }
 
 int	main(int argc, char *argv[], char *envp[])
@@ -63,6 +75,7 @@ int	main(int argc, char *argv[], char *envp[])
 		init_pipex(t, argc, argv, envp);
 		open_files(t);
 		start_master_process(t);
+		delete_children(t);
 	}
 	return (0);
 }
