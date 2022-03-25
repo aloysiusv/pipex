@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc_bonus/pipex_bonus.h"
+#include "../inc/pipex.h"
 
 void	free_strings(char **tab)
 {
@@ -46,5 +46,5 @@ void	oops_crash(t_pipex *t, char *error_message)
 {
 	free_all(t);
 	ft_putstr_fd(error_message, 2);
-	exit(127);
+	exit(EXIT_FAILURE);
 }

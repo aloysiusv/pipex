@@ -15,7 +15,6 @@
 static void	start_master_process(t_pipex *t)
 {
 	int		pid;
-	int		status;
 
 	if (pipe(t->fd) == -1)
 		oops_crash(t, "Error: 'pipe' failed\n");
@@ -31,7 +30,7 @@ static void	start_master_process(t_pipex *t)
 	}
 	close(t->fd[IN]);
 	close(t->fd[OUT]);
-	while (waitpid(-1, &status, 0) != -1)
+	while (wait(NULL) != -1)
 		;
 }
 
@@ -39,20 +38,10 @@ static void	open_files(t_pipex *t)
 {
 	t->infile = open(t->argv[1], O_RDONLY);
 	if (t->infile < 0)
-	{
-		ft_putstr_fd("pipex: ", 2);
-		ft_putstr_fd(t->argv[1], 2);
-		ft_putstr_fd(": ", 2);
-		oops_crash(t, "no such file or directory\n");
-	}
+		oops_crash(t, "Error: can't open infile\n");
 	t->outfile = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (t->outfile < 0)
-	{
-		ft_putstr_fd("pipex: ", 2);
-		ft_putstr_fd(t->argv[t->argc - 1], 2);
-		ft_putstr_fd(": ", 2);
-		oops_crash(t, "no such file or directory\n");
-	}
+		oops_crash(t, "Error: can't open/create outfile\n");
 }
 
 static void	init_pipex(t_pipex *t, int argc, char *argv[], char *envp[])

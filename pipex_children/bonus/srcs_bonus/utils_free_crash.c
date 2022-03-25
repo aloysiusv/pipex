@@ -12,7 +12,7 @@
 
 #include "../inc_bonus/pipex_bonus.h"
 
-void	free_strings(char **tab)
+static void	free_strings(char **tab)
 {
 	size_t	i;
 
@@ -31,20 +31,40 @@ void	free_strings(char **tab)
 	tab = NULL;
 }
 
-void	free_all(t_pipex *t)
+static void    delete_child(t_child *child)
 {
-	if (t->full_path)
+    if (child == NULL)
+		return ;
+	if (child->full_path)
+		free(child->full_path);
+	if (child->all_paths)
+		free_strings(child->all_paths);
+	if (child->command)
+		free_strings(child->command);
+	ft_putstr_fd("A child has been deleted\n", 2);
+	free(child);
+}
+
+void	delete_children(t_pipex *t)
+{
+	t_child	*tmp;
+
+	if (t->head_child)
 	{
-		free(t->full_path);
-		t->full_path = NULL;
+		while (t->nb_cmds)
+		{
+			tmp = t->head_child;
+			t->head_child = t->head_child->next_child;
+			delete_child(tmp);
+			t->nb_cmds--;
+		}
+		t->head_child = NULL;
 	}
-	free_strings(t->all_paths);
-	free_strings(t->command);
 }
 
 void	oops_crash(t_pipex *t, char *error_message)
 {
-	free_all(t);
+	delete_children(t);
 	ft_putstr_fd(error_message, 2);
 	exit(127);
 }

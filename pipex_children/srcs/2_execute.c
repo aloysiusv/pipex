@@ -12,14 +12,6 @@
 
 #include "../inc/pipex.h"
 
-static void	display_cmd_error(t_pipex *t, char *str)
-{
-	ft_putstr_fd("pipex: ", 2);
-	ft_putstr_fd(str, 2);
-	ft_putstr_fd(": ", 2);
-	oops_crash(t, "command not found\n");
-}
-
 static void	get_paths_get_command(t_pipex *t)
 {
 	size_t	i;
@@ -43,10 +35,10 @@ static void	get_paths_get_command(t_pipex *t)
 		i++;
 	}
 	if (t->all_paths == NULL)
-		display_cmd_error(t, t->argv[t->current_cmd]);
+		oops_crash(t, "Error: failed to retrieve all paths\n");
 	t->command = ft_split(t->argv[t->current_cmd], ' ');
 	if (t->command == NULL)
-		display_cmd_error(t, t->argv[t->current_cmd]);
+		oops_crash(t, "Error: failed to extract command\n");
 }
 
 static void	add_slash_to_path(t_pipex *t, size_t i)
@@ -84,5 +76,5 @@ void	execute_command(t_pipex *t)
 		t->full_path = NULL;
 		i++;
 	}
-	display_cmd_error(t, t->argv[t->current_cmd]);
+	oops_crash(t, "Error: command not found\n");
 }

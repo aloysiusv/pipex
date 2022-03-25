@@ -20,7 +20,7 @@
 # include <fcntl.h>
 # include <stdio.h>
 
-# define IN		0
+# define IN	0
 # define OUT	1
 
 # define FOUND		0
@@ -34,7 +34,6 @@ typedef struct s_pipex
 	int			infile;
 	int			outfile;
 	int			fd[2];
-	int			pid;
 	size_t		nb_cmds;
 	size_t		current_cmd;
 	char		**command;
