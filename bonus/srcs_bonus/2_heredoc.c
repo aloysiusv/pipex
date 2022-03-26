@@ -20,9 +20,9 @@ static void	write_line(t_pipex *t, int *fd_heredoc)
 	lim_len = ft_strlen(t->limiter);
 	while (1)
 	{
-		ft_putstr_fd("pipex here_doc> ", STDOUT_FILENO);
+		ft_putstr_fd("> ", STDOUT_FILENO);
 		if (get_next_line(STDIN_FILENO, &line) == -1)
-			oops_crash(t, "Error: failed to retrieve line\n");
+			oops_crash(t, "error: invalid input\n");
 		if (ft_strncmp(line, t->limiter, lim_len) == FOUND)
 		{
 			free(line);
@@ -40,10 +40,10 @@ void	create_heredoc(t_pipex *t)
 	int		fd_heredoc[2];
 
 	if (pipe(fd_heredoc) == -1)
-		oops_crash(t, "Error: 'pipe' failed in here_doc\n");
+		oops_crash(t, "pipex: error: 'pipe' failed in heredoc\n");
 	pid = fork();
 	if (pid == -1)
-		oops_crash(t, "Error: 'fork' failed in here_doc\n");
+		oops_crash(t, "pipex: error: 'fork' failed in heredoc\n");
 	if (pid == 0)
 		write_line(t, fd_heredoc);
 	dup2(fd_heredoc[IN], STDIN_FILENO);

@@ -12,19 +12,19 @@
 
 #include "../inc/pipex.h"
 
-static void	start_master_process(t_pipex *t)
+static void	start_parent_process(t_pipex *t)
 {
 	int		pid;
 	int		status;
 
 	if (pipe(t->fd) == -1)
-		oops_crash(t, "Error: 'pipe' failed\n");
+		oops_crash(t, "pipex: error: 'pipe' failed\n");
 	t->current_cmd = 2;
 	while (t->current_cmd < t->argc - 1)
 	{
 		pid = fork();
 		if (pid == -1)
-			oops_crash(t, "Error: failed to create new process\n");
+			oops_crash(t, "pipex: error: failed to create new process\n");
 		else if (pid == 0)
 			redir_exec(t);
 		t->current_cmd++;
@@ -43,7 +43,7 @@ static void	open_files(t_pipex *t)
 		ft_putstr_fd("pipex: ", 2);
 		ft_putstr_fd(t->argv[1], 2);
 		ft_putstr_fd(": ", 2);
-		oops_crash(t, "no such file or directory\n");
+		oops_crash(t, "No such file or directory\n");
 	}
 	t->outfile = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (t->outfile < 0)
@@ -51,7 +51,7 @@ static void	open_files(t_pipex *t)
 		ft_putstr_fd("pipex: ", 2);
 		ft_putstr_fd(t->argv[t->argc - 1], 2);
 		ft_putstr_fd(": ", 2);
-		oops_crash(t, "no such file or directory\n");
+		oops_crash(t, "No such file or directory\n");
 	}
 }
 
@@ -70,7 +70,7 @@ static void	launch_pipex(t_pipex *t, int argc, char *argv[], char *envp[])
 {
 	init_pipex(t, argc, argv, envp);
 	open_files(t);
-	start_master_process(t);
+	start_parent_process(t);
 }
 
 int	main(int argc, char *argv[], char *envp[])
@@ -78,7 +78,12 @@ int	main(int argc, char *argv[], char *envp[])
 	t_pipex		t[1];
 
 	if (argc != 5)
-		ft_putstr_fd("Error: invalid number of arguments\n", 2);
+	{
+		ft_putstr_fd("pipex: error: invalid number of arguments\n", 2);
+		ft_putstr_fd("Usage: ", 2);
+		ft_putstr_fd("./pipex infile cmd1 cmd2 outfile\n", 2);
+		return (127);
+	}
 	else
 		launch_pipex(t, argc, argv, envp);
 	return (0);

@@ -34,7 +34,7 @@ static void	redir_any_command(t_pipex *t)
 	int	tmp_fd[2];
 
 	if (pipe(tmp_fd) == -1)
-		oops_crash(t, "Error: 'pipe' failed in slave process\n");
+		oops_crash(t, "pipex: error: 'pipe' failed in child process\n");
 	dup2(tmp_fd[IN], STDIN_FILENO);
 	dup2(tmp_fd[OUT], STDOUT_FILENO);
 	close(tmp_fd[IN]);

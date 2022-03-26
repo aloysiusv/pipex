@@ -46,5 +46,5 @@ void	oops_crash(t_pipex *t, char *error_message)
 {
 	free_all(t);
 	ft_putstr_fd(error_message, 2);
-	exit(EXIT_FAILURE);
+	exit(127);
 }

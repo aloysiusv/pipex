@@ -45,7 +45,7 @@ typedef struct s_pipex
 	char		*limiter;
 }				t_pipex;
 
-void	start_master_process(t_pipex *t);
+void	start_parent_process(t_pipex *t);
 void	create_heredoc(t_pipex *t);
 void	redir_exec(t_pipex *t);
 void	execute_command(t_pipex *t);

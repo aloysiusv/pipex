@@ -17,7 +17,7 @@ static void	display_error_and_exit(t_pipex *t, char *str)
 	ft_putstr_fd("pipex: ", 2);
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd(": ", 2);
-	oops_crash(t, "no such file or directory\n");
+	oops_crash(t, "No such file or directory\n");
 }
 
 static void	open_files(t_pipex *t)
@@ -26,7 +26,6 @@ static void	open_files(t_pipex *t)
 	{
 		t->heredoc = 1;
 		t->limiter = t->argv[2];
-		ft_putstr_fd(t->limiter, 2);
 		t->outfile = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_APPEND,
 				0644);
 	}
@@ -60,18 +59,18 @@ int	main(int argc, char *argv[], char *envp[])
 
 	if (argc < 5)
 	{
-		ft_putstr_fd("Error: invalid number of arguments\n", 2);
+		ft_putstr_fd("pipex: error: invalid number of arguments\n", 2);
 		ft_putstr_fd("Usage[1]: ", 2);
 		ft_putstr_fd("./pipex infile cmd1...cmd-nth outfile\n", 2);
 		ft_putstr_fd("Usage[2]: ", 2);
 		ft_putstr_fd("./pipex here_doc limiter cmd1...cmd-nth outfile\n", 2);
-		return (1);
+		return (127);
 	}
 	else
 	{
 		init_pipex(t, argc, argv, envp);
 		open_files(t);
-		start_master_process(t);
+		start_parent_process(t);
 	}
 	return (0);
 }
