@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lrandria <lrandria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/21 19:56:37 by lrandria          #+#    #+#             */
-/*   Updated: 2022/03/21 19:56:37 by lrandria         ###   ########.fr       */
+/*   Created: 2022/03/31 13:58:33 by lrandria          #+#    #+#             */
+/*   Updated: 2022/03/31 13:58:33 by lrandria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,42 +14,53 @@
 
 static void	redir_first_command(t_pipex *t)
 {
-	if (t->heredoc == NO)
-		dup2(t->infile, STDIN_FILENO);
-	dup2(t->fd[OUT], STDOUT_FILENO);
-	close(t->fd[OUT]);
-	close(t->fd[IN]);
+	int		a;
+	int		b;
+
+	a = dup2(t->infile, STDIN_FILENO);
+	b = dup2(t->fd_pipes[1], STDOUT_FILENO);
+	if (a == -1 || b == -1)
+		oops_crash(t, "pipex: error: 'dup2' failed for first command\n");
 }
 
 static void	redir_last_command(t_pipex *t)
 {
-	dup2(t->outfile, STDOUT_FILENO);
-	dup2(t->fd[IN], STDIN_FILENO);
-	close(t->fd[IN]);
-	close(t->fd[OUT]);
+	int		a;
+	int		b;
+
+	a = dup2(t->fd_pipes[2 * t->index - 2], STDIN_FILENO);
+	b = dup2(t->outfile, STDOUT_FILENO);
+	if (a == -1 || b == -1)
+		oops_crash(t, "pipex: error: 'dup2' failed for last command\n");
 }
 
 static void	redir_any_command(t_pipex *t)
 {
-	int	tmp_fd[2];
+	int		a;
+	int		b;
 
-	if (pipe(tmp_fd) == -1)
-		oops_crash(t, "pipex: error: 'pipe' failed in child process\n");
-	dup2(tmp_fd[IN], STDIN_FILENO);
-	dup2(tmp_fd[OUT], STDOUT_FILENO);
-	close(tmp_fd[IN]);
-	close(tmp_fd[OUT]);
-	close(t->fd[OUT]);
-	close(t->fd[IN]);
+	a = dup2(t->fd_pipes[2 * t->index - 2], STDIN_FILENO);
+	b = dup2(t->fd_pipes[2 * t->index + 1], STDOUT_FILENO);
+	if (a == -1 || b == -1)
+		oops_crash(t, "pipex: error: 'dup2' failed for middle command\n");
 }
 
 void	redir_exec(t_pipex *t)
 {	
-	if (t->current_cmd == 2 || (t->current_cmd == 3 && t->heredoc == 1))
-		redir_first_command(t);
-	else if (t->current_cmd == t->argc - 2)
-		redir_last_command(t);
-	else
-		redir_any_command(t);
-	execute_command(t);
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == -1)
+		oops_crash(t, "pipex: error: 'fork' failed in parent process\n");
+	else if (pid == 0)
+	{
+		if (t->index == 0)
+			redir_first_command(t);
+		else if (t->index == (t->nb_cmds - 1))
+			redir_last_command(t);
+		else
+			redir_any_command(t);
+		close_pipes(t);
+		execute_command(t);
+	}
 }

@@ -12,41 +12,30 @@
 
 #include "../inc_bonus/pipex_bonus.h"
 
-static void	write_line(t_pipex *t, int *fd_heredoc)
+void	create_heredoc(t_pipex *t)
 {
 	char	*line;
-	size_t	lim_len;
+	int		tmp_file;
 
-	lim_len = ft_strlen(t->limiter);
+	tmp_file = open("tmp_heredoc", O_WRONLY | O_CREAT | O_APPEND, 0744);
+	if (tmp_file == -1)
+		oops_crash(t, "pipex: error: couldn't open/create 'tmp_heredoc'\n");
+	t->infile = open("tmp_heredoc", O_RDONLY);
+	line = NULL;
 	while (1)
 	{
 		ft_putstr_fd("> ", STDOUT_FILENO);
 		if (get_next_line(STDIN_FILENO, &line) == -1)
-			oops_crash(t, "error: invalid input\n");
-		if (ft_strncmp(line, t->limiter, lim_len) == FOUND)
+			oops_crash(t, "pipex: error: can't get next line\n");
+		if (ft_strncmp(line, t->limiter, ft_strlen(t->limiter)) == FOUND
+			&& line[ft_strlen(t->limiter)] == '\0')
 		{
 			free(line);
+			close(tmp_file);
 			return ;
 		}
-		ft_putstr_fd(line, fd_heredoc[OUT]);
-		ft_putstr_fd("\n", fd_heredoc[OUT]);
+		ft_putstr_fd(line, tmp_file);
+		ft_putstr_fd("\n", tmp_file);
 		free(line);
 	}
-}
-
-void	create_heredoc(t_pipex *t)
-{
-	pid_t	pid;
-	int		fd_heredoc[2];
-
-	if (pipe(fd_heredoc) == -1)
-		oops_crash(t, "pipex: error: 'pipe' failed in heredoc\n");
-	pid = fork();
-	if (pid == -1)
-		oops_crash(t, "pipex: error: 'fork' failed in heredoc\n");
-	if (pid == 0)
-		write_line(t, fd_heredoc);
-	dup2(fd_heredoc[IN], STDIN_FILENO);
-	close(fd_heredoc[IN]);
-	close(fd_heredoc[OUT]);
 }

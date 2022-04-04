@@ -75,7 +75,7 @@ void	execute_command(t_pipex *t)
 	while (t->all_paths[i])
 	{
 		add_slash_to_path(t, i);
-		if (access(t->full_path, X_OK) == 0)
+		if (access(t->full_path, X_OK) == FOUND)
 		{
 			if (execve(t->full_path, t->command, 0) == -1)
 				oops_crash(t, "pipex: error: execve system call failed\n");

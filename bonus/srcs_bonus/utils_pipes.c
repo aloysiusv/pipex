@@ -1,37 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   1_start.c                                          :+:      :+:    :+:   */
+/*   utils_pipes.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lrandria <lrandria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/21 20:13:58 by lrandria          #+#    #+#             */
-/*   Updated: 2022/03/21 20:13:58 by lrandria         ###   ########.fr       */
+/*   Created: 2022/03/31 15:46:18 by lrandria          #+#    #+#             */
+/*   Updated: 2022/03/31 15:46:18 by lrandria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc_bonus/pipex_bonus.h"
 
-void	start_parent_process(t_pipex *t)
+void	open_pipes(t_pipex *t)
 {
-	t->index = 0;
-	t->current_cmd = 2;
-	if (t->heredoc == YES)
+	size_t	i;
+
+	t->fd_pipes = (int *)malloc(sizeof(int) * t->nb_fds);
+	if (t->fd_pipes == NULL)
+		oops_crash(t, "pipex: error: couldn't create pipes\n");
+	i = 0;
+	while (i < (t->nb_cmds - 1))
 	{
-		t->current_cmd = 3;
-		t->nb_cmds = t->argc - 4;
-		create_heredoc(t);
+		if (pipe(&t->fd_pipes[2 * i]) < 0)
+			oops_crash(t, "pipex: error: couldn't open pipes\n");
+		i++;
 	}
-	open_pipes(t);
-	while (t->index < t->nb_cmds)
+}
+
+void	close_pipes(t_pipex *t)
+{
+	size_t	i;
+
+	i = 0;
+	while (i < t->nb_fds)
 	{
-		redir_exec(t);
-		t->index++;
-		t->current_cmd++;
+		close(t->fd_pipes[i]);
+		i++;
 	}
-	close_pipes(t);
-	while (wait(NULL) != -1)
-		;
-	if (t->heredoc == YES)
-		unlink("tmp_heredoc");
 }

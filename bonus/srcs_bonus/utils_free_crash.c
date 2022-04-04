@@ -40,8 +40,11 @@ void	free_all(t_pipex *t)
 	}
 	free_strings(t->all_paths);
 	free_strings(t->command);
-	close(t->fd[IN]);
-	close(t->fd[OUT]);
+	if (t->fd_pipes)
+	{
+		close_pipes(t);
+		free(t->fd_pipes);
+	}
 }
 
 void	oops_crash(t_pipex *t, char *error_message)

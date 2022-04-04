@@ -24,6 +24,12 @@ static void	open_files(t_pipex *t)
 {
 	if (ft_strncmp(t->argv[1], "here_doc", 8) == FOUND)
 	{
+		if (t->argc < 6)
+		{
+			ft_putstr_fd("pipex: error: invalid number of arguments\n", 2);
+			ft_putstr_fd("Usage[2]: ", 2);
+			oops_crash(t, "./pipex here_doc limiter cmd1...cmdN outfile\n");
+		}
 		t->heredoc = 1;
 		t->limiter = t->argv[2];
 		t->outfile = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_APPEND,
@@ -41,7 +47,7 @@ static void	open_files(t_pipex *t)
 		display_error_and_exit(t, t->argv[t->argc - 1]);
 }
 
-static void	init_pipex(t_pipex *t, int argc, char *argv[], char *envp[])
+static void	init_infos(t_pipex *t, int argc, char *argv[], char *envp[])
 {
 	t->argc = argc;
 	t->argv = argv;
@@ -51,6 +57,7 @@ static void	init_pipex(t_pipex *t, int argc, char *argv[], char *envp[])
 	t->all_paths = NULL;
 	t->full_path = NULL;
 	t->heredoc = 0;
+	t->nb_fds = 2 * (t->nb_cmds - 1);
 }
 
 int	main(int argc, char *argv[], char *envp[])
@@ -61,16 +68,17 @@ int	main(int argc, char *argv[], char *envp[])
 	{
 		ft_putstr_fd("pipex: error: invalid number of arguments\n", 2);
 		ft_putstr_fd("Usage[1]: ", 2);
-		ft_putstr_fd("./pipex infile cmd1...cmd-nth outfile\n", 2);
+		ft_putstr_fd("./pipex infile cmd1...cmdN outfile\n", 2);
 		ft_putstr_fd("Usage[2]: ", 2);
-		ft_putstr_fd("./pipex here_doc limiter cmd1...cmd-nth outfile\n", 2);
+		ft_putstr_fd("./pipex here_doc limiter cmd1...cmdN outfile\n", 2);
 		return (127);
 	}
 	else
 	{
-		init_pipex(t, argc, argv, envp);
+		init_infos(t, argc, argv, envp);
 		open_files(t);
 		start_parent_process(t);
 	}
+	free_all(t);
 	return (0);
 }
