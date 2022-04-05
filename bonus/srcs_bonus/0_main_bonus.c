@@ -56,6 +56,7 @@ static void	init_infos(t_pipex *t, int argc, char *argv[], char *envp[])
 	t->command = NULL;
 	t->all_paths = NULL;
 	t->full_path = NULL;
+	t->fd_pipes = NULL;
 	t->heredoc = 0;
 	t->nb_fds = 2 * (t->nb_cmds - 1);
 }

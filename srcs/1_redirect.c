@@ -14,16 +14,26 @@
 
 static void	redir_first_command(t_pipex *t)
 {
-	dup2(t->infile, STDIN_FILENO);
-	dup2(t->fd[OUT], STDOUT_FILENO);
-	close(t->fd[OUT]);
+	int		a;
+	int		b;
+
+	a = dup2(t->infile, STDIN_FILENO);
+	b = dup2(t->fd[OUT], STDOUT_FILENO);
+	if (a == -1 || b == -1)
+		oops_crash(t, "pipex: error: 'dup2' failed for first command\n");
 	close(t->fd[IN]);
+	close(t->fd[OUT]);
 }
 
 static void	redir_last_command(t_pipex *t)
 {
-	dup2(t->outfile, STDOUT_FILENO);
-	dup2(t->fd[IN], STDIN_FILENO);
+	int		a;
+	int		b;
+
+	a = dup2(t->fd[IN], STDIN_FILENO);
+	b = dup2(t->outfile, STDOUT_FILENO);
+	if (a == -1 || b == -1)
+		oops_crash(t, "pipex: error: 'dup2' failed for last command\n");
 	close(t->fd[IN]);
 	close(t->fd[OUT]);
 }

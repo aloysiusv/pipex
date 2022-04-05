@@ -45,6 +45,8 @@ void	free_all(t_pipex *t)
 		close_pipes(t);
 		free(t->fd_pipes);
 	}
+	if (t->heredoc)
+		unlink("tmp_heredoc");
 }
 
 void	oops_crash(t_pipex *t, char *error_message)

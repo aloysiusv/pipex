@@ -15,7 +15,6 @@
 static void	start_parent_process(t_pipex *t)
 {
 	int		pid;
-	int		status;
 
 	if (pipe(t->fd) == -1)
 		oops_crash(t, "pipex: error: 'pipe' failed\n");
@@ -31,7 +30,7 @@ static void	start_parent_process(t_pipex *t)
 	}
 	close(t->fd[IN]);
 	close(t->fd[OUT]);
-	while (waitpid(-1, &status, 0) != -1)
+	while (waitpid(-1, NULL, 0) != -1)
 		;
 }
 

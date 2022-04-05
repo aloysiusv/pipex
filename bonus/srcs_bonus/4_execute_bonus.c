@@ -75,7 +75,7 @@ void	execute_command(t_pipex *t)
 	while (t->all_paths[i])
 	{
 		add_slash_to_path(t, i);
-		if (access(t->full_path, X_OK) == FOUND)
+		if (access(t->full_path, F_OK | X_OK) == FOUND)
 		{
 			if (execve(t->full_path, t->command, 0) == -1)
 				oops_crash(t, "pipex: error: execve system call failed\n");
@@ -84,5 +84,5 @@ void	execute_command(t_pipex *t)
 		t->full_path = NULL;
 		i++;
 	}
-	oops_crash(t, "pipex: error: permission denied\n");
+	display_cmd_error(t, t->argv[t->current_cmd]);
 }
