@@ -31,18 +31,20 @@ typedef struct s_pipex
 	size_t		argc;
 	char		**argv;
 	char		**envp;
+	char		**command;
+	char		**all_paths;
+	char		*exec_path;
+	char		*full_line;
 	int			infile;
 	int			outfile;
 	int			fd[2];
 	int			pid;
 	size_t		nb_cmds;
 	size_t		current_cmd;
-	char		**command;
-	char		**all_paths;
-	char		*full_path;
 }				t_pipex;
 
 void	execute_command(t_pipex *t);
+void	execute_env_var_command(t_pipex *t);
 void	redir_exec(t_pipex *t);
 
 size_t	ft_strlen(const char *s);
@@ -52,7 +54,12 @@ char	**ft_split(char const *s, char c);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 void	ft_putstr_fd(char *s, int fd);
+size_t	find_char(char *s, char c);
 
 void	oops_crash(t_pipex *t, char *error_message);
+void	display_cmd_error(t_pipex *t, char *command);
+void	display_file_error(t_pipex *t, char *file);
+void	free_strings(char **tab);
+void	free_all(t_pipex *t);
 
 #endif

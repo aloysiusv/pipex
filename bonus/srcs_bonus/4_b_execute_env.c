@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   2_b_execute_env.c                                  :+:      :+:    :+:   */
+/*   4_b_execute_env.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lrandria <lrandria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/07 00:47:27 by lrandria          #+#    #+#             */
-/*   Updated: 2022/04/07 00:47:27 by lrandria         ###   ########.fr       */
+/*   Created: 2022/04/07 18:34:03 by lrandria          #+#    #+#             */
+/*   Updated: 2022/04/07 18:34:03 by lrandria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include "../inc_bonus/pipex_bonus.h"
 
 static void	create_env_paths(t_pipex *t)
 {
@@ -24,12 +24,12 @@ static void	create_env_paths(t_pipex *t)
 		{
 			tmp = ft_substr(t->envp[i], 5, ft_strlen(t->envp[i]));
 			if (tmp == NULL)
-				oops_crash(t, "pipex: error: 'malloc' failed\n");
+				oops_crash(t, "pipex_bonus: error: 'malloc' failed\n");
 			t->all_paths = ft_split(tmp, ':');
 			if (t->all_paths == NULL)
 			{
 				free(tmp);
-				oops_crash(t, "pipex: error:  'malloc' failed\n");
+				oops_crash(t, "pipex_bonus: error:  'malloc' failed\n");
 			}
 			free(tmp);
 		}
@@ -58,7 +58,7 @@ static void	add_slash_to_path(t_pipex *t, size_t i)
 	if (t->exec_path == NULL)
 	{
 		free(tmp);
-		oops_crash(t, "pipex: error: 'malloc' failed\n");
+		oops_crash(t, "pipex_bonus: error: 'malloc' failed\n");
 	}
 	free(tmp);
 }
@@ -67,6 +67,8 @@ void	execute_env_var_command(t_pipex *t)
 {
 	size_t	i;
 
+	if (t->argv[t->current_cmd][0] == ' ')
+		display_cmd_error(t, t->argv[t->current_cmd]);
 	create_env_paths(t);
 	create_env_command(t);
 	i = 0;
@@ -76,9 +78,10 @@ void	execute_env_var_command(t_pipex *t)
 		if (access(t->exec_path, F_OK | X_OK) == 0)
 		{
 			if (execve(t->exec_path, t->command, t->envp) == -1)
-				oops_crash(t, "pipex: error: execve system call failed\n");
+				oops_crash(t, "pipex_bonus: error: execve system call failed\n");
 		}
 		free(t->exec_path);
+		t->exec_path = NULL;
 		i++;
 	}
 }

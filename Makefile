@@ -13,7 +13,7 @@
 NAME		=	pipex
 NAME_BONUS	=	pipex_bonus
 CC			=	gcc
-CFLAGS		=	-Wall -Wextra -Werror #-fsanitize=address -g3
+CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g3
 OBJS		=	$(SRCS:.c=.o)
 OBJS_BONUS	=	$(SRCS_BONUS:.c=.o)
 HDR			=	./inc/pipex.h
@@ -22,7 +22,8 @@ S			=	./srcs/
 S_BONUS		=	./bonus/srcs_bonus/
 SRCS		=	$(S)0_main.c \
 				$(S)1_redirect.c \
-				$(S)2_execute.c \
+				$(S)2_a_execute.c \
+				$(S)2_b_execute_env.c \
 				$(S)utils_split.c \
 				$(S)utils_free_crash.c \
 				$(S)utils_libft.c $(S)utils_libft_mallocs.c
@@ -31,7 +32,8 @@ SRCS_BONUS	=	$(S_BONUS)0_main_bonus.c \
 				$(S_BONUS)1_start.c \
 				$(S_BONUS)2_heredoc.c \
 				$(S_BONUS)3_redirect_bonus.c \
-				$(S_BONUS)4_execute_bonus.c \
+				$(S_BONUS)4_a_execute.c \
+				$(S_BONUS)4_b_execute_env.c \
 				$(S_BONUS)utils_pipes.c \
 				$(S_BONUS)utils_gnl.c \
 				$(S_BONUS)utils_split.c \

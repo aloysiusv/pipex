@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   4_a_execute.c                                      :+:      :+:    :+:   */
+/*   2_a_execute.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lrandria <lrandria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/04/07 01:08:52 by lrandria          #+#    #+#             */
-/*   Updated: 2022/04/07 01:08:52 by lrandria         ###   ########.fr       */
+/*   Created: 2022/04/06 15:57:48 by lrandria          #+#    #+#             */
+/*   Updated: 2022/04/06 15:57:48 by lrandria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc_bonus/pipex_bonus.h"
+#include "../inc/pipex.h"
 
 static void	create_path(t_pipex *t)
 {
@@ -68,9 +68,13 @@ static void	execute_full_path_cmd(t_pipex *t)
 
 void	execute_command(t_pipex *t)
 {
+	size_t	last_char;
+
 	t->full_line = t->argv[t->current_cmd];
-	if (t->full_line[0] == '/' || ft_strncmp(t->full_line, "./", 2) == FOUND
-		|| ft_strncmp(t->full_line, "../", 3) == FOUND)
+	last_char = ft_strlen(t->full_line) - 1;
+	if (t->full_line[0] == ' ' || t->full_line[last_char] == ' ')
+		display_cmd_error(t, t->full_line);
+	if (find_char(t->full_line, '/') == FOUND)
 		execute_full_path_cmd(t);
 	else
 		execute_env_var_command(t);

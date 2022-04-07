@@ -30,19 +30,20 @@
 typedef struct s_pipex
 {
 	size_t		argc;
-	char		**argv;
-	char		**envp;
-	int			infile;
-	int			outfile;
-	int			*fd_pipes;
 	size_t		nb_fds;
 	size_t		nb_cmds;
 	size_t		index;
 	size_t		current_cmd;
+	int			infile;
+	int			outfile;
+	int			*fd_pipes;
+	int			heredoc;
+	char		**argv;
+	char		**envp;
 	char		**command;
 	char		**all_paths;
-	char		*full_path;
-	int			heredoc;
+	char		*exec_path;
+	char		*full_line;
 	char		*limiter;
 }				t_pipex;
 
@@ -50,6 +51,7 @@ void	start_parent_process(t_pipex *t);
 void	create_heredoc(t_pipex *t);
 void	redir_exec(t_pipex *t);
 void	execute_command(t_pipex *t);
+void	execute_env_var_command(t_pipex *t);
 
 void	open_pipes(t_pipex *t);
 void	close_pipes(t_pipex *t);
@@ -63,8 +65,11 @@ char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strdup(const char *s);
 void	ft_putstr_fd(char *s, int fd);
+size_t	find_char(char *s, char c);
 
 void	oops_crash(t_pipex *t, char *error_message);
 void	free_all(t_pipex *t);
+void	display_cmd_error(t_pipex *t, char *command);
+void	display_file_error(t_pipex *t, char *file);
 
 #endif

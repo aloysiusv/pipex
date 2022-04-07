@@ -1,49 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   2_execute.c                                        :+:      :+:    :+:   */
+/*   2_b_execute_env.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lrandria <lrandria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/17 17:42:53 by lrandria          #+#    #+#             */
-/*   Updated: 2022/03/17 17:42:53 by lrandria         ###   ########.fr       */
+/*   Created: 2022/04/07 00:47:27 by lrandria          #+#    #+#             */
+/*   Updated: 2022/04/07 00:47:27 by lrandria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc_bonus/pipex_bonus.h"
+#include "../inc/pipex.h"
 
-static void	display_cmd_error(t_pipex *t, char *str)
-{
-	ft_putstr_fd("pipex: ", 2);
-	ft_putstr_fd(str, 2);
-	ft_putstr_fd(": ", 2);
-	oops_crash(t, "command not found\n");
-}
-
-static void	get_paths_get_command(t_pipex *t)
+static void	create_env_paths(t_pipex *t)
 {
 	size_t	i;
 	char	*tmp;
 
 	i = 0;
-	if (t->envp[i] == NULL)
-		oops_crash(t, "pipex: error: environment variables not found\n");
 	while (t->envp[i])
 	{
 		if (ft_strncmp(t->envp[i], "PATH=", 5) == FOUND)
 		{
 			tmp = ft_substr(t->envp[i], 5, ft_strlen(t->envp[i]));
 			if (tmp == NULL)
-				display_cmd_error(t, t->argv[t->current_cmd]);
+				oops_crash(t, "pipex: error: 'malloc' failed\n");
 			t->all_paths = ft_split(tmp, ':');
 			if (t->all_paths == NULL)
-				display_cmd_error(t, t->argv[t->current_cmd]);
+			{
+				free(tmp);
+				oops_crash(t, "pipex: error:  'malloc' failed\n");
+			}
 			free(tmp);
 		}
 		i++;
 	}
 	if (t->all_paths == NULL)
 		display_cmd_error(t, t->argv[t->current_cmd]);
+}
+
+static void	create_env_command(t_pipex *t)
+{
 	t->command = ft_split(t->argv[t->current_cmd], ' ');
 	if (t->command == NULL)
 		display_cmd_error(t, t->argv[t->current_cmd]);
@@ -55,34 +52,39 @@ static void	add_slash_to_path(t_pipex *t, size_t i)
 
 	tmp = ft_strjoin(t->all_paths[i], "/");
 	if (t->all_paths[i][ft_strlen(t->all_paths[i]) - 1] != '/')
-		t->full_path = ft_strjoin(tmp, t->command[0]);
+		t->exec_path = ft_strjoin(tmp, t->command[0]);
 	else
-		t->full_path = ft_strjoin(t->all_paths[i], t->command[0]);
-	if (t->full_path == NULL)
+		t->exec_path = ft_strjoin(t->all_paths[i], t->command[0]);
+	if (t->exec_path == NULL)
 	{
 		free(tmp);
-		display_cmd_error(t, t->argv[t->current_cmd]);
+		oops_crash(t, "pipex: error: 'malloc' failed\n");
 	}
 	free(tmp);
 }
 
-void	execute_command(t_pipex *t)
+void	execute_env_var_command(t_pipex *t)
 {
 	size_t	i;
 
+	if (t->argv[t->current_cmd][0] == ' ')
+		display_cmd_error(t, t->argv[t->current_cmd]);
+	create_env_paths(t);
+	create_env_command(t);
 	i = 0;
-	get_paths_get_command(t);
 	while (t->all_paths[i])
 	{
 		add_slash_to_path(t, i);
-		if (access(t->full_path, F_OK | X_OK) == FOUND)
+		ft_putstr_fd("t->exec_path = ", 2);
+		ft_putstr_fd(t->exec_path, 2);
+		ft_putstr_fd("\n", 2);
+		if (access(t->exec_path, F_OK | X_OK) == 0)
 		{
-			if (execve(t->full_path, t->command, 0) == -1)
+			if (execve(t->exec_path, t->command, t->envp) == -1)
 				oops_crash(t, "pipex: error: execve system call failed\n");
 		}
-		free(t->full_path);
-		t->full_path = NULL;
+		free(t->exec_path);
+		t->exec_path = NULL;
 		i++;
 	}
-	display_cmd_error(t, t->argv[t->current_cmd]);
 }

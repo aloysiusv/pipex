@@ -20,7 +20,7 @@ static void	redir_first_command(t_pipex *t)
 	a = dup2(t->infile, STDIN_FILENO);
 	b = dup2(t->fd_pipes[1], STDOUT_FILENO);
 	if (a == -1 || b == -1)
-		oops_crash(t, "pipex: error: 'dup2' failed for first command\n");
+		oops_crash(t, "pipex_bonus: error: 'dup2' failed for first command\n");
 }
 
 static void	redir_last_command(t_pipex *t)
@@ -31,7 +31,7 @@ static void	redir_last_command(t_pipex *t)
 	a = dup2(t->fd_pipes[2 * t->index - 2], STDIN_FILENO);
 	b = dup2(t->outfile, STDOUT_FILENO);
 	if (a == -1 || b == -1)
-		oops_crash(t, "pipex: error: 'dup2' failed for last command\n");
+		oops_crash(t, "pipex_bonus: error: 'dup2' failed for last command\n");
 }
 
 static void	redir_any_command(t_pipex *t)
@@ -42,7 +42,7 @@ static void	redir_any_command(t_pipex *t)
 	a = dup2(t->fd_pipes[2 * t->index - 2], STDIN_FILENO);
 	b = dup2(t->fd_pipes[2 * t->index + 1], STDOUT_FILENO);
 	if (a == -1 || b == -1)
-		oops_crash(t, "pipex: error: 'dup2' failed for middle command\n");
+		oops_crash(t, "pipex_bonus: error: 'dup2' failed for middle command\n");
 }
 
 void	redir_exec(t_pipex *t)
@@ -51,7 +51,7 @@ void	redir_exec(t_pipex *t)
 
 	pid = fork();
 	if (pid == -1)
-		oops_crash(t, "pipex: error: 'fork' failed in parent process\n");
+		oops_crash(t, "pipex_bonus: error: 'fork' failed in parent process\n");
 	else if (pid == 0)
 	{
 		if (t->index == 0)
@@ -61,6 +61,8 @@ void	redir_exec(t_pipex *t)
 		else
 			redir_any_command(t);
 		close_pipes(t);
+		close(t->infile);
+		close(t->outfile);
 		execute_command(t);
 	}
 }

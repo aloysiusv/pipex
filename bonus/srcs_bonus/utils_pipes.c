@@ -18,12 +18,12 @@ void	open_pipes(t_pipex *t)
 
 	t->fd_pipes = (int *)malloc(sizeof(int) * t->nb_fds);
 	if (t->fd_pipes == NULL)
-		oops_crash(t, "pipex: error: couldn't create pipes\n");
+		oops_crash(t, "pipex_bonus: error: couldn't create pipes\n");
 	i = 0;
 	while (i < (t->nb_cmds - 1))
 	{
 		if (pipe(&t->fd_pipes[2 * i]) < 0)
-			oops_crash(t, "pipex: error: couldn't open pipes\n");
+			oops_crash(t, "pipex_bonus: error: couldn't open pipes\n");
 		i++;
 	}
 }

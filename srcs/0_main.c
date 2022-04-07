@@ -23,13 +23,15 @@ static void	start_parent_process(t_pipex *t)
 	{
 		pid = fork();
 		if (pid == -1)
-			oops_crash(t, "pipex: error: failed to create new process\n");
+			oops_crash(t, "pipex: error: 'fork' failed\n");
 		else if (pid == 0)
 			redir_exec(t);
 		t->current_cmd++;
 	}
 	close(t->fd[IN]);
 	close(t->fd[OUT]);
+	close(t->infile);
+	close(t->outfile);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
 }
@@ -38,20 +40,10 @@ static void	open_files(t_pipex *t)
 {
 	t->infile = open(t->argv[1], O_RDONLY);
 	if (t->infile < 0)
-	{
-		ft_putstr_fd("pipex: ", 2);
-		ft_putstr_fd(t->argv[1], 2);
-		ft_putstr_fd(": ", 2);
-		oops_crash(t, "No such file or directory\n");
-	}
+		display_file_error(t, t->argv[1]);
 	t->outfile = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (t->outfile < 0)
-	{
-		ft_putstr_fd("pipex: ", 2);
-		ft_putstr_fd(t->argv[t->argc - 1], 2);
-		ft_putstr_fd(": ", 2);
-		oops_crash(t, "No such file or directory\n");
-	}
+		display_file_error(t, t->argv[t->argc - 1]);
 }
 
 static void	init_pipex(t_pipex *t, int argc, char *argv[], char *envp[])
@@ -62,7 +54,8 @@ static void	init_pipex(t_pipex *t, int argc, char *argv[], char *envp[])
 	t->nb_cmds = t->argc - 3;
 	t->command = NULL;
 	t->all_paths = NULL;
-	t->full_path = NULL;
+	t->exec_path = NULL;
+	t->full_line = NULL;
 }
 
 static void	launch_pipex(t_pipex *t, int argc, char *argv[], char *envp[])
@@ -85,5 +78,6 @@ int	main(int argc, char *argv[], char *envp[])
 	}
 	else
 		launch_pipex(t, argc, argv, envp);
+	free_all(t);
 	return (0);
 }

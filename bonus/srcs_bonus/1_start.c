@@ -30,11 +30,10 @@ void	start_parent_process(t_pipex *t)
 		t->current_cmd++;
 	}
 	close_pipes(t);
-	while (wait(NULL) != -1)
+	close(t->infile);
+	close(t->outfile);
+	while (waitpid(-1, NULL, 0) != -1)
 		;
 	if (t->heredoc == YES)
-	{
 		unlink("tmp_heredoc");
-		t->heredoc = 0;
-	}
 }

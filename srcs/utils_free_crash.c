@@ -28,18 +28,18 @@ void	free_strings(char **tab)
 		}
 	}
 	free(tab);
-	tab = NULL;
 }
 
 void	free_all(t_pipex *t)
 {
-	if (t->full_path)
-	{
-		free(t->full_path);
-		t->full_path = NULL;
-	}
+	if (t->exec_path)
+		free(t->exec_path);
 	free_strings(t->all_paths);
 	free_strings(t->command);
+	close(t->fd[IN]);
+	close(t->fd[OUT]);
+	close(t->infile);
+	close(t->outfile);
 }
 
 void	oops_crash(t_pipex *t, char *error_message)
@@ -47,4 +47,20 @@ void	oops_crash(t_pipex *t, char *error_message)
 	free_all(t);
 	ft_putstr_fd(error_message, 2);
 	exit(127);
+}
+
+void	display_cmd_error(t_pipex *t, char *command)
+{
+	ft_putstr_fd("pipex: ", 2);
+	ft_putstr_fd(command, 2);
+	ft_putstr_fd(": ", 2);
+	oops_crash(t, "command not found\n");
+}
+
+void	display_file_error(t_pipex *t, char *file)
+{
+	ft_putstr_fd("pipex: ", 2);
+	ft_putstr_fd(file, 2);
+	ft_putstr_fd(": ", 2);
+	oops_crash(t, "No such file or directory\n");
 }

@@ -65,6 +65,6 @@ size_t	find_char(char *s, char c)
 	i = 0;
 	while (s[i])
 		if (s[i++] == c)
-			return (1);
-	return (0);
+			return (0);
+	return (-1);
 }
