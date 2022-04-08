@@ -80,6 +80,6 @@ char	**ft_split(char const *s, char c)
 			return (free_words(new_arr, size));
 		i++;
 	}
-	new_arr[i] = '\0';
+	new_arr[i] = NULL;
 	return (new_arr);
 }

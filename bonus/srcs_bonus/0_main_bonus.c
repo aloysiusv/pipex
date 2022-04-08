@@ -51,7 +51,6 @@ static void	init_infos(t_pipex *t, int argc, char *argv[], char *envp[])
 	t->full_line = NULL;
 	t->heredoc = 0;
 	t->fd_pipes = 0;
-	t->nb_fds = 2 * (t->nb_cmds - 1);
 }
 
 int	main(int argc, char *argv[], char *envp[])

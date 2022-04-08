@@ -94,12 +94,11 @@ static int	create_one_line(char **line, char **stock)
 	return (1);
 }
 
-int	get_next_line(int fd, char **line)
+int	get_next_line(int fd, char **line, char **stock)
 {
-	static char		*stock;
 	int				read_status;
 
-	read_status = read_file(fd, &stock);
+	read_status = read_file(fd, stock);
 	if (read_status == -1 || !line)
 		return (-1);
 	if (read_status == 0 && stock == 0)
@@ -109,5 +108,5 @@ int	get_next_line(int fd, char **line)
 			return (-1);
 		return (0);
 	}
-	return (create_one_line(line, &stock));
+	return (create_one_line(line, stock));
 }

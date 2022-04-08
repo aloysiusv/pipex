@@ -12,8 +12,8 @@
 
 NAME		=	pipex
 NAME_BONUS	=	pipex_bonus
-CC			=	gcc
-CFLAGS		=	-Wall -Wextra -Werror -fsanitize=address -g3
+CC			=	clang
+CFLAGS		=	-Wall -Wextra -Werror -g3
 OBJS		=	$(SRCS:.c=.o)
 OBJS_BONUS	=	$(SRCS_BONUS:.c=.o)
 HDR			=	./inc/pipex.h
