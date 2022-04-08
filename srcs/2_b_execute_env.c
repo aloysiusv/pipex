@@ -67,17 +67,12 @@ void	execute_env_var_command(t_pipex *t)
 {
 	size_t	i;
 
-	if (t->argv[t->current_cmd][0] == ' ')
-		display_cmd_error(t, t->argv[t->current_cmd]);
 	create_env_paths(t);
 	create_env_command(t);
 	i = 0;
 	while (t->all_paths[i])
 	{
 		add_slash_to_path(t, i);
-		ft_putstr_fd("t->exec_path = ", 2);
-		ft_putstr_fd(t->exec_path, 2);
-		ft_putstr_fd("\n", 2);
 		if (access(t->exec_path, F_OK | X_OK) == 0)
 		{
 			if (execve(t->exec_path, t->command, t->envp) == -1)

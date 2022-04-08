@@ -17,8 +17,6 @@ static void	create_path(t_pipex *t)
 	size_t	i;
 
 	i = 0;
-	if (t->full_line[i] == ' ')
-		display_cmd_error(t, t->full_line);
 	while (t->full_line[i])
 	{
 		if (t->full_line[i] == ' ')

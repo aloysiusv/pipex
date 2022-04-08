@@ -14,7 +14,7 @@
 
 static void	open_files(t_pipex *t)
 {
-	if (ft_strncmp(t->argv[1], "here_doc", 8) == FOUND)
+	if (ft_strncmp(t->argv[1], "here_doc", 9) == FOUND)
 	{
 		if (t->argc < 6)
 		{

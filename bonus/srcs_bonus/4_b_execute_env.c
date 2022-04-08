@@ -67,8 +67,6 @@ void	execute_env_var_command(t_pipex *t)
 {
 	size_t	i;
 
-	if (t->argv[t->current_cmd][0] == ' ')
-		display_cmd_error(t, t->argv[t->current_cmd]);
 	create_env_paths(t);
 	create_env_command(t);
 	i = 0;
