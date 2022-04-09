@@ -41,12 +41,21 @@ void	free_all(t_pipex *t)
 		close_pipes(t);
 		free(t->fd_pipes);
 	}
+	if (t->infile_opened == FOUND)
+		close(t->infile);
+	if (t->outfile_opened == FOUND)
+		close(t->outfile);
+	if (t->heredoc == FOUND)
+		close(t->fd_heredoc);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
 }
 
 void	oops_crash(t_pipex *t, char *error_message)
 {
-	free_all(t);
 	ft_putstr_fd(error_message, 2);
+	free_all(t);
 	exit(127);
 }
 
@@ -60,6 +69,7 @@ void	display_cmd_error(t_pipex *t, char *command)
 
 void	display_file_error(t_pipex *t, char *file)
 {
+	open_pipes(t);
 	ft_putstr_fd("pipex_bonus: ", 2);
 	ft_putstr_fd(file, 2);
 	ft_putstr_fd(": ", 2);

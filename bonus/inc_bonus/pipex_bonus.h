@@ -6,7 +6,7 @@
 /*   By: lrandria <lrandria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/22 08:06:58 by lrandria          #+#    #+#             */
-/*   Updated: 2022/03/22 08:06:58 by lrandria         ###   ########.fr       */
+/*   Updated: 2022/04/09 17:04:06 by lrandria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,11 @@
 # define IN		0
 # define OUT	1
 
-# define FOUND	0
-
 # define NO		0
 # define YES	1
+
+# define FOUND	0
+# define NOT_FOUND -1
 
 typedef struct s_pipex
 {
@@ -34,10 +35,13 @@ typedef struct s_pipex
 	size_t		nb_cmds;
 	size_t		index;
 	size_t		current_cmd;
+	int			*fd_pipes;
 	int			infile;
 	int			outfile;
-	int			*fd_pipes;
+	int			infile_opened;
+	int			outfile_opened;
 	int			heredoc;
+	int			fd_heredoc;
 	char		**argv;
 	char		**envp;
 	char		**command;
@@ -67,7 +71,7 @@ char	*ft_strdup(const char *s);
 void	ft_putstr_fd(char *s, int fd);
 size_t	find_char(char *s, char c);
 
-void	oops_crash(t_pipex *t, char *error_message);
+void	oops_crash(t_pipex *t, char *error_message) __attribute__((noreturn));
 void	free_all(t_pipex *t);
 void	display_cmd_error(t_pipex *t, char *command);
 void	display_file_error(t_pipex *t, char *file);

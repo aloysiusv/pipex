@@ -39,13 +39,6 @@ static void	create_env_paths(t_pipex *t)
 		display_cmd_error(t, t->argv[t->current_cmd]);
 }
 
-static void	create_env_command(t_pipex *t)
-{
-	t->command = ft_split(t->argv[t->current_cmd], ' ');
-	if (t->command == NULL)
-		display_cmd_error(t, t->argv[t->current_cmd]);
-}
-
 static void	add_slash_to_path(t_pipex *t, size_t i)
 {
 	char	*tmp;
@@ -68,7 +61,6 @@ void	execute_env_var_command(t_pipex *t)
 	size_t	i;
 
 	create_env_paths(t);
-	create_env_command(t);
 	i = 0;
 	while (t->all_paths[i])
 	{

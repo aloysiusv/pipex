@@ -38,14 +38,19 @@ void	free_all(t_pipex *t)
 	free_strings(t->command);
 	close(t->fd[IN]);
 	close(t->fd[OUT]);
-	close(t->infile);
-	close(t->outfile);
+	if (t->infile_opened == FOUND)
+		close(t->infile);
+	if (t->outfile_opened == FOUND)
+		close(t->outfile);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
 }
 
 void	oops_crash(t_pipex *t, char *error_message)
 {
-	free_all(t);
 	ft_putstr_fd(error_message, 2);
+	free_all(t);
 	exit(127);
 }
 
@@ -59,6 +64,8 @@ void	display_cmd_error(t_pipex *t, char *command)
 
 void	display_file_error(t_pipex *t, char *file)
 {
+	if (pipe(t->fd) == -1)
+		oops_crash(t, "pipex: error: 'pipe' failed\n");
 	ft_putstr_fd("pipex: ", 2);
 	ft_putstr_fd(file, 2);
 	ft_putstr_fd(": ", 2);

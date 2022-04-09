@@ -14,14 +14,8 @@
 
 void	start_parent_process(t_pipex *t)
 {
-	t->index = 0;
-	t->current_cmd = 2;
-	if (t->heredoc == YES)
-	{
-		t->current_cmd = 3;
-		t->nb_cmds = t->argc - 4;
+	if (t->heredoc == FOUND)
 		create_heredoc(t);
-	}
 	open_pipes(t);
 	while (t->index < t->nb_cmds)
 	{
@@ -34,6 +28,6 @@ void	start_parent_process(t_pipex *t)
 	close(t->outfile);
 	while (waitpid(-1, NULL, 0) != -1)
 		;
-	if (t->heredoc == YES)
+	if (t->heredoc == FOUND)
 		unlink("tmp_heredoc");
 }

@@ -6,7 +6,7 @@
 /*   By: lrandria <lrandria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 00:42:12 by lrandria          #+#    #+#             */
-/*   Updated: 2022/03/11 00:42:12 by lrandria         ###   ########.fr       */
+/*   Updated: 2022/04/09 16:50:24 by lrandria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,13 @@ typedef struct s_pipex
 	char		**envp;
 	char		**command;
 	char		**all_paths;
-	char		*exec_path;
 	char		*full_line;
+	char		*exec_path;
 	int			infile;
 	int			outfile;
 	int			fd[2];
+	int			infile_opened;
+	int			outfile_opened;
 	int			pid;
 	size_t		nb_cmds;
 	size_t		current_cmd;
@@ -56,7 +58,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len);
 void	ft_putstr_fd(char *s, int fd);
 size_t	find_char(char *s, char c);
 
-void	oops_crash(t_pipex *t, char *error_message);
+void	oops_crash(t_pipex *t, char *error_message) __attribute__((noreturn));
 void	display_cmd_error(t_pipex *t, char *command);
 void	display_file_error(t_pipex *t, char *file);
 void	free_strings(char **tab);

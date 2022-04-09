@@ -41,9 +41,11 @@ static void	open_files(t_pipex *t)
 	t->infile = open(t->argv[1], O_RDONLY);
 	if (t->infile < 0)
 		display_file_error(t, t->argv[1]);
+	t->infile_opened = FOUND;
 	t->outfile = open(t->argv[t->argc - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (t->outfile < 0)
 		display_file_error(t, t->argv[t->argc - 1]);
+	t->outfile_opened = FOUND;
 }
 
 static void	init_pipex(t_pipex *t, int argc, char *argv[], char *envp[])
@@ -56,6 +58,12 @@ static void	init_pipex(t_pipex *t, int argc, char *argv[], char *envp[])
 	t->all_paths = NULL;
 	t->exec_path = NULL;
 	t->full_line = NULL;
+	t->fd[0] = 0;
+	t->fd[1] = 0;
+	t->infile = 0;
+	t->outfile = 0;
+	t->infile_opened = NOT_FOUND;
+	t->outfile_opened = NOT_FOUND;
 }
 
 static void	launch_pipex(t_pipex *t, int argc, char *argv[], char *envp[])

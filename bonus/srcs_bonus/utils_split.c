@@ -6,7 +6,7 @@
 /*   By: lrandria <lrandria@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/12 14:21:24 by lrandria          #+#    #+#             */
-/*   Updated: 2022/03/12 14:21:24 by lrandria         ###   ########.fr       */
+/*   Updated: 2022/04/09 17:02:02 by lrandria         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ char	**ft_split(char const *s, char c)
 	{
 		new_arr[i] = word_cpy(&s, c);
 		if (new_arr[i] == NULL)
-			return (free_words(new_arr, size));
+			return (free_words(new_arr, i));
 		i++;
 	}
 	new_arr[i] = NULL;
