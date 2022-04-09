@@ -82,6 +82,9 @@ int	main(int argc, char *argv[], char *envp[])
 		ft_putstr_fd("pipex: error: invalid number of arguments\n", 2);
 		ft_putstr_fd("Usage: ", 2);
 		ft_putstr_fd("./pipex infile cmd1 cmd2 outfile\n", 2);
+		close(STDIN_FILENO);
+		close(STDOUT_FILENO);
+		close(STDERR_FILENO);
 		return (127);
 	}
 	else
